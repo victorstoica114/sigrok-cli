@@ -462,7 +462,8 @@ void datafeed_in(const struct sr_dev_inst *sdi,
 
 	if (!do_props && o && !opt_pds) {
 		if (sr_output_send(o, packet, &out) == SR_OK) {
-			if (oa && !out) {
+			/* The backup formatter must never append text to logic metadata. */
+			if (oa && !out && packet->type == SR_DF_ANALOG) {
 				/*
 				 * The user didn't specify an output module,
 				 * but needs to see this analog data.
